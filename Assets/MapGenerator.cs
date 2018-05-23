@@ -15,12 +15,21 @@ public class MapGenerator : MonoBehaviour {
     public bool useRandomSeed;
     public bool allWallsFilled;
     public int smoothingIterations = 5;
+    public const int smoothPivot = 4;
 
     int[,] map;
 
     void Start()
     {
         GenerateMap();
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            GenerateMap();
+        }
     }
 
     void GenerateMap()
@@ -66,7 +75,13 @@ public class MapGenerator : MonoBehaviour {
         {
             for (int y = 0; y < height; y++)
             {
+                int neighbourWallTiles = GetSurroundingWallCount(x, y);
 
+                if (neighbourWallTiles > smoothPivot)
+                    map[x, y] = 1;
+                else if (neighbourWallTiles < smoothPivot)
+                    map[x, y] = 0;
+                //else leave as is if equal?
             }
         }
     }
@@ -74,15 +89,22 @@ public class MapGenerator : MonoBehaviour {
     int GetSurroundingWallCount(int gridX, int gridY)
     {
         int wallCount = 0;
-        for (int neighbourX = gridX - 1; neighbourX <= gridX +1; neighbourX++)
+        for (int neighbourX = gridX - 1; neighbourX <= gridX +1; neighbourX++) //tile grid 3x3 surrounding self
         {
             for (int neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY++)
             {
-                if (neighbourX >= 0 && neighbourX < width && neighbourY < height)
+                if (neighbourX >= 0 && neighbourX < width && neighbourY >=0 && neighbourY < height) //avoid out of bounds tiles
                 {
-                    if (neighbourX != gridX || neighbourY != gridY)
+                    if (neighbourX != gridX || neighbourY != gridY) //avoid middle tile (self)
                     {
                         wallCount += map[neighbourX, neighbourY];
+                    }
+                }
+                else
+                {
+                    if (allWallsFilled)
+                    {
+                        wallCount++;    //encourage growth of walls around the map if desired
                     }
                 }
             }
@@ -100,7 +122,8 @@ public class MapGenerator : MonoBehaviour {
                 for (int y = 0; y < height; y++)
                 {
                     Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
-                    Vector3 pos = new Vector3(-width/2 + x + 0.5f, 0 , -height/2 + y + 0.5f);
+                    //Vector3 pos = new Vector3(-width/2 + x + 0.5f, 0 , -height/2 + y + 0.5f); //orig course---but we want x and y not x and z
+                    Vector3 pos = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
                     Gizmos.DrawCube(pos, Vector3.one);
                 }
             }

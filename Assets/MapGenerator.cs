@@ -14,6 +14,8 @@ public class MapGenerator : MonoBehaviour {
     public string seed;
     public bool useRandomSeed;
     public bool allWallsFilled;
+    public bool filledTopLeft, filledTopRight, filledRightTop, filledRightBottom, filledBottomRight, filledBottomLeft, filledLeftBottom, filledLeftTop;
+    public int filledEdgeThickness = 2;
     public int smoothingIterations = 5;
     public const int smoothPivot = 4;
 
@@ -64,7 +66,49 @@ public class MapGenerator : MonoBehaviour {
                         map[x, y] = 1;
                     }
                 }
-                
+
+                //ugly but will do for now - clockwise from top of screen left side
+                if(filledTopLeft)
+                {
+                    if (y >= height - filledEdgeThickness && x < (width/2) - 1)
+                        map[x, y] = 1;
+                }
+                if (filledTopRight)
+                {
+                    if (y >= height - filledEdgeThickness && x > (width / 2) - 1)
+                        map[x, y] = 1;
+                }
+                if (filledRightTop)
+                {
+                    if (x >= width - filledEdgeThickness && y > (height / 2) - 1)
+                        map[x, y] = 1;
+                }
+                if (filledRightBottom)
+                {
+                    if (x >= width - filledEdgeThickness && y < (height / 2) - 1)
+                        map[x, y] = 1;
+                }
+                if (filledBottomRight)
+                {
+                    if (y < filledEdgeThickness && x > (width / 2) - 1)
+                        map[x, y] = 1;
+                }
+                if (filledBottomLeft)
+                {
+                    if (y < filledEdgeThickness && x < (width / 2) - 1)
+                        map[x, y] = 1;
+                }
+                if (filledLeftBottom)
+                {
+                    if (x < filledEdgeThickness && y < (height / 2) - 1)
+                        map[x, y] = 1;
+                }
+                if (filledLeftTop)
+                {
+                    if (x < filledEdgeThickness && y > (height / 2) - 1)
+                        map[x, y] = 1;
+                }
+
             }
         }
     }

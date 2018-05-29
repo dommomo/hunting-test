@@ -8,15 +8,20 @@ public class MapGenerator : MonoBehaviour {
     [Range(0,100)]
     public int randomFillPercent;
 
-    public int width;
-    public int height;
+    public int initialWidth;
+    public int initialHeight;
+
+    public int currentWidth;
+    public int currentHeight;
 
     public string seed;
     public bool useRandomSeed;
     public bool allWallsFilled;
     public bool filledTopLeft, filledTopRight, filledRightTop, filledRightBottom, filledBottomRight, filledBottomLeft, filledLeftBottom, filledLeftTop;
     public int filledEdgeThickness = 2;
-    public int smoothingIterations = 5;
+    public int preStretchSmoothingIterations = 2;
+    public int stretchMulti = 5;
+    public int postStretchSmoothingIterations = 1;
     public const int smoothPivot = 4;
 
     int[,] map;
@@ -34,18 +39,49 @@ public class MapGenerator : MonoBehaviour {
         }
     }
 
-    void GenerateMap()
+    private void GenerateMap()
     {
-        map = new int[width,height];
+        map = new int[initialWidth,initialHeight];
+        currentWidth = initialWidth;
+        currentHeight = initialHeight;
         RandomFillMap();
 
-        for (int i = 0; i < smoothingIterations; i++)
+        //initial map smoothing
+        for (int i = 0; i < preStretchSmoothingIterations; i++)
         {
             SmoothMap();
         }
+
+        StretchMap(stretchMulti);
     }
 
-    void RandomFillMap()
+    private void StretchMap(int stretchMulti)
+    {
+        int[,] oldMap = map;
+        int stretchedWidth = initialWidth * stretchMulti;
+        int stretchedHeight = initialHeight * stretchMulti;
+        map = new int[stretchedWidth, stretchedHeight];
+
+        for (int x = 0; x < initialWidth; x++)
+        {
+            for (int y = 0; y < initialHeight; y++)
+            {
+                int val = oldMap[x, y];
+                for (int xStretch = x*stretchMulti; xStretch < (x*(stretchMulti + 1)); xStretch++)
+                {
+                    for (int yStretch = y * stretchMulti; yStretch < (y * (stretchMulti + 1)); yStretch++)
+                    {
+                        map[xStretch, yStretch] = val;
+                    }
+                }
+            }
+        }
+
+        currentWidth = stretchedWidth;
+        currentHeight = stretchedHeight;
+    }
+
+    private void RandomFillMap()
     {
         if (useRandomSeed)
         {
@@ -54,14 +90,14 @@ public class MapGenerator : MonoBehaviour {
 
         System.Random psuedoRandom = new System.Random(seed.GetHashCode());
 
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < initialWidth; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < initialHeight; y++)
             {
                 map[x, y] = (psuedoRandom.Next(0, 100) < randomFillPercent) ? 1 : 0;
                 if (allWallsFilled)
                 {
-                    if (x == 0 || x == width-1 || y == 0 || y == height-1)
+                    if (x == 0 || x == initialWidth-1 || y == 0 || y == initialHeight-1)
                     {
                         map[x, y] = 1;
                     }
@@ -70,42 +106,42 @@ public class MapGenerator : MonoBehaviour {
                 //ugly but will do for now - clockwise from top of screen left side
                 if(filledTopLeft)
                 {
-                    if (y >= height - filledEdgeThickness && x < (width/2) - 1)
+                    if (y >= initialHeight - filledEdgeThickness && x < (initialWidth/2) - 1)
                         map[x, y] = 1;
                 }
                 if (filledTopRight)
                 {
-                    if (y >= height - filledEdgeThickness && x > (width / 2) - 1)
+                    if (y >= initialHeight - filledEdgeThickness && x > (initialWidth / 2) - 1)
                         map[x, y] = 1;
                 }
                 if (filledRightTop)
                 {
-                    if (x >= width - filledEdgeThickness && y > (height / 2) - 1)
+                    if (x >= initialWidth - filledEdgeThickness && y > (initialHeight / 2) - 1)
                         map[x, y] = 1;
                 }
                 if (filledRightBottom)
                 {
-                    if (x >= width - filledEdgeThickness && y < (height / 2) - 1)
+                    if (x >= initialWidth - filledEdgeThickness && y < (initialHeight / 2) - 1)
                         map[x, y] = 1;
                 }
                 if (filledBottomRight)
                 {
-                    if (y < filledEdgeThickness && x > (width / 2) - 1)
+                    if (y < filledEdgeThickness && x > (initialWidth / 2) - 1)
                         map[x, y] = 1;
                 }
                 if (filledBottomLeft)
                 {
-                    if (y < filledEdgeThickness && x < (width / 2) - 1)
+                    if (y < filledEdgeThickness && x < (initialWidth / 2) - 1)
                         map[x, y] = 1;
                 }
                 if (filledLeftBottom)
                 {
-                    if (x < filledEdgeThickness && y < (height / 2) - 1)
+                    if (x < filledEdgeThickness && y < (initialHeight / 2) - 1)
                         map[x, y] = 1;
                 }
                 if (filledLeftTop)
                 {
-                    if (x < filledEdgeThickness && y > (height / 2) - 1)
+                    if (x < filledEdgeThickness && y > (initialHeight / 2) - 1)
                         map[x, y] = 1;
                 }
 
@@ -113,11 +149,11 @@ public class MapGenerator : MonoBehaviour {
         }
     }
 
-    void SmoothMap()
+    private void SmoothMap()
     {
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < currentWidth; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < currentHeight; y++)
             {
                 int neighbourWallTiles = GetSurroundingWallCount(x, y);
 
@@ -137,7 +173,7 @@ public class MapGenerator : MonoBehaviour {
         {
             for (int neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY++)
             {
-                if (neighbourX >= 0 && neighbourX < width && neighbourY >=0 && neighbourY < height) //avoid out of bounds tiles
+                if (neighbourX >= 0 && neighbourX < currentWidth && neighbourY >=0 && neighbourY < currentHeight) //avoid out of bounds tiles
                 {
                     if (neighbourX != gridX || neighbourY != gridY) //avoid middle tile (self)
                     {
@@ -161,13 +197,13 @@ public class MapGenerator : MonoBehaviour {
     {
         if (map != null)
         {
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < currentWidth; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (int y = 0; y < currentHeight; y++)
                 {
                     Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
                     //Vector3 pos = new Vector3(-width/2 + x + 0.5f, 0 , -height/2 + y + 0.5f); //orig course---but we want x and y not x and z
-                    Vector3 pos = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
+                    Vector3 pos = new Vector3(-currentWidth / 2 + x + 0.5f, -currentHeight / 2 + y + 0.5f, 0);
                     Gizmos.DrawCube(pos, Vector3.one);
                 }
             }

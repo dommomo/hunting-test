@@ -53,6 +53,12 @@ public class MapGenerator : MonoBehaviour {
         }
 
         StretchMap(stretchMulti);
+
+        //more smooth after stretch to get rid of blocky resolution
+        for (int i = 0; i < postStretchSmoothingIterations; i++)
+        {
+            SmoothMap();
+        }
     }
 
     private void StretchMap(int stretchMulti)
@@ -67,9 +73,9 @@ public class MapGenerator : MonoBehaviour {
             for (int y = 0; y < initialHeight; y++)
             {
                 int val = oldMap[x, y];
-                for (int xStretch = x*stretchMulti; xStretch < (x*(stretchMulti + 1)); xStretch++)
+                for (int xStretch = x*stretchMulti; xStretch < ((x+1)*stretchMulti); xStretch++)
                 {
-                    for (int yStretch = y * stretchMulti; yStretch < (y * (stretchMulti + 1)); yStretch++)
+                    for (int yStretch = y * stretchMulti; yStretch < ((y + 1) * stretchMulti); yStretch++)
                     {
                         map[xStretch, yStretch] = val;
                     }

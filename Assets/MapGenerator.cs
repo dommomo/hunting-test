@@ -6,7 +6,9 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour {
 
     [Range(0,100)]
-    public int randomFillPercent;
+    public int randomFillPercentInitial;
+    [Range(0, 100)]
+    public int randomFillPercentPostStretch;
 
     public int initialWidth;
     public int initialHeight;
@@ -44,7 +46,7 @@ public class MapGenerator : MonoBehaviour {
         map = new int[initialWidth,initialHeight];
         currentWidth = initialWidth;
         currentHeight = initialHeight;
-        RandomFillMap();
+        RandomFillMapInitial();
 
         //initial map smoothing
         for (int i = 0; i < preStretchSmoothingIterations; i++)
@@ -53,11 +55,28 @@ public class MapGenerator : MonoBehaviour {
         }
 
         StretchMap(stretchMulti);
+        RandomFillMapPostStretch();
 
         //more smooth after stretch to get rid of blocky resolution
         for (int i = 0; i < postStretchSmoothingIterations; i++)
         {
             SmoothMap();
+        }
+    }
+
+    private void RandomFillMapPostStretch()
+    {
+        System.Random psuedoRandom = new System.Random(seed.GetHashCode());
+
+        for (int x = 0; x < currentWidth; x++)
+        {
+            for (int y = 0; y < currentHeight; y++)
+            {
+                if ((map[x,y]) == 0)
+                {
+                    map[x, y] = (psuedoRandom.Next(0, 100) < randomFillPercentPostStretch) ? 1 : 0;
+                }
+            }
         }
     }
 
@@ -87,7 +106,7 @@ public class MapGenerator : MonoBehaviour {
         currentHeight = stretchedHeight;
     }
 
-    private void RandomFillMap()
+    private void RandomFillMapInitial()
     {
         if (useRandomSeed)
         {
@@ -100,7 +119,7 @@ public class MapGenerator : MonoBehaviour {
         {
             for (int y = 0; y < initialHeight; y++)
             {
-                map[x, y] = (psuedoRandom.Next(0, 100) < randomFillPercent) ? 1 : 0;
+                map[x, y] = (psuedoRandom.Next(0, 100) < randomFillPercentInitial) ? 1 : 0;
                 if (allWallsFilled)
                 {
                     if (x == 0 || x == initialWidth-1 || y == 0 || y == initialHeight-1)

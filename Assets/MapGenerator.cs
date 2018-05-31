@@ -31,7 +31,6 @@ public class MapGenerator : MonoBehaviour {
     void Start()
     {
         GenerateMap();
-        //TestRandom();
     }
 
     void Update()
@@ -41,15 +40,6 @@ public class MapGenerator : MonoBehaviour {
             GenerateMap();
         }
     }
-
-    //private void TestRandom()
-    //{
-    //    for (int i = 0; i < 1000; i++)
-    //    {
-    //        Debug.Log(RandomHelper.PercentAsInt(i, i, seed.GetHashCode()));
-    //    }
-
-    //}
 
     private void GenerateMap()
     {
@@ -122,13 +112,11 @@ public class MapGenerator : MonoBehaviour {
             seed = Time.time.ToString();
         }
 
-        System.Random psuedoRandom = new System.Random(seed.GetHashCode());
-
         for (int x = 0; x < initialWidth; x++)
         {
             for (int y = 0; y < initialHeight; y++)
             {
-                map[x, y] = (psuedoRandom.Next(0, 100) < randomFillPercentInitial) ? 1 : 0;
+                map[x, y] = (RandomHelper.PercentAsInt(x, y, seed.GetHashCode()) < randomFillPercentInitial) ? 1 : 0;
                 if (allWallsFilled)
                 {
                     if (x == 0 || x == initialWidth-1 || y == 0 || y == initialHeight-1)

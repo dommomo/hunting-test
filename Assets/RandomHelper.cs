@@ -7,6 +7,7 @@ public class RandomHelper
 
     public static int Range(int x, int y, int key, int range)
     {
+        //uint hash = (uint)key.GetHashCode();
         uint hash = (uint)key;
         hash ^= (uint)x;
         hash *= 0x51d7348d;
@@ -40,6 +41,11 @@ public class RandomHelper
     public static float Percent(int x, int y, int key)
     {
         return (float)Range(x, y, key, int.MaxValue) / (float)int.MaxValue;
+    }
+
+    public static int PercentAsInt(int x, int y, int key)
+    {
+        return (int)(Percent(x, y, key) * 100);
     }
 
     public static float Percent(float x, float y, int key)

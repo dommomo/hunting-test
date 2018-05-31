@@ -31,6 +31,7 @@ public class MapGenerator : MonoBehaviour {
     void Start()
     {
         GenerateMap();
+        //TestRandom();
     }
 
     void Update()
@@ -40,6 +41,15 @@ public class MapGenerator : MonoBehaviour {
             GenerateMap();
         }
     }
+
+    //private void TestRandom()
+    //{
+    //    for (int i = 0; i < 1000; i++)
+    //    {
+    //        Debug.Log(RandomHelper.PercentAsInt(i, i, seed.GetHashCode()));
+    //    }
+
+    //}
 
     private void GenerateMap()
     {
@@ -66,7 +76,6 @@ public class MapGenerator : MonoBehaviour {
 
     private void RandomFillMapPostStretch()
     {
-        System.Random psuedoRandom = new System.Random(seed.GetHashCode());
 
         for (int x = 0; x < currentWidth; x++)
         {
@@ -74,7 +83,7 @@ public class MapGenerator : MonoBehaviour {
             {
                 if ((map[x,y]) == 0)
                 {
-                    map[x, y] = (psuedoRandom.Next(0, 100) < randomFillPercentPostStretch) ? 1 : 0;
+                    map[x, y] = (RandomHelper.PercentAsInt(x, y, seed.GetHashCode()) < randomFillPercentPostStretch) ? 1 : 0;
                 }
             }
         }

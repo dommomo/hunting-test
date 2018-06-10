@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapGenerator : MonoBehaviour {
+public class RockGenerator : MonoBehaviour {
 
     [Range(0,100)]
     public int randomFillPercentInitial;
@@ -16,7 +16,7 @@ public class MapGenerator : MonoBehaviour {
     public int currentWidth;
     public int currentHeight;
 
-    public string seed;
+    private string seed;
     public bool useRandomSeed;
     public bool allWallsFilled;
     public bool filledTopLeft, filledTopRight, filledRightTop, filledRightBottom, filledBottomRight, filledBottomLeft, filledLeftBottom, filledLeftTop;
@@ -28,20 +28,27 @@ public class MapGenerator : MonoBehaviour {
 
     int[,] map;
 
-    void Start()
+    public int[,] GetMap()
     {
-        GenerateMap();
+        return GenerateMap();
     }
 
-    void Update()
+    public int[,] GetMap(int[] filledPanels, string seed)
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            GenerateMap();
-        }
+        this.seed = seed;
+        allWallsFilled = false;
+        filledTopLeft = filledPanels[0] > 0 ? true : false ;
+        filledTopRight = filledPanels[1] > 0 ? true : false;
+        filledTopRight = filledPanels[2] > 0 ? true : false;
+        filledTopRight = filledPanels[3] > 0 ? true : false;
+        filledTopRight = filledPanels[4] > 0 ? true : false;
+        filledTopRight = filledPanels[5] > 0 ? true : false;
+        filledTopRight = filledPanels[6] > 0 ? true : false;
+        filledTopRight = filledPanels[7] > 0 ? true : false;
+        return GenerateMap();
     }
 
-    private void GenerateMap()
+    private int[,] GenerateMap()
     {
         map = new int[initialWidth,initialHeight];
         currentWidth = initialWidth;
@@ -62,6 +69,8 @@ public class MapGenerator : MonoBehaviour {
         {
             SmoothMap();
         }
+
+        return map;
     }
 
     private void RandomFillMapPostStretch()
@@ -215,20 +224,20 @@ public class MapGenerator : MonoBehaviour {
         return wallCount;
     }
 
-    private void OnDrawGizmos()
-    {
-        if (map != null)
-        {
-            for (int x = 0; x < currentWidth; x++)
-            {
-                for (int y = 0; y < currentHeight; y++)
-                {
-                    Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
-                    //Vector3 pos = new Vector3(-width/2 + x + 0.5f, 0 , -height/2 + y + 0.5f); //orig course---but we want x and y not x and z
-                    Vector3 pos = new Vector3(-currentWidth / 2 + x + 0.5f, -currentHeight / 2 + y + 0.5f, 0);
-                    Gizmos.DrawCube(pos, Vector3.one);
-                }
-            }
-        }
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    if (map != null)
+    //    {
+    //        for (int x = 0; x < currentWidth; x++)
+    //        {
+    //            for (int y = 0; y < currentHeight; y++)
+    //            {
+    //                Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
+    //                //Vector3 pos = new Vector3(-width/2 + x + 0.5f, 0 , -height/2 + y + 0.5f); //orig course---but we want x and y not x and z
+    //                Vector3 pos = new Vector3(-currentWidth / 2 + x + 0.5f, -currentHeight / 2 + y + 0.5f, 0);
+    //                Gizmos.DrawCube(pos, Vector3.one);
+    //            }
+    //        }
+    //    }
+    //}
 }

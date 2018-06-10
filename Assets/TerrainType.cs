@@ -8,6 +8,7 @@ public class TerrainType {
 
     public string terrainName;
     public bool walkable;
+    public bool isAnimated;
     public Sprite[] tiles;
 
     public Sprite GetTile(Vector2 pos, string seed)

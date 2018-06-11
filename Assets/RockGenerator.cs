@@ -45,6 +45,8 @@ public class RockGenerator : MonoBehaviour {
         filledTopRight = filledPanels[5] > 0 ? true : false;
         filledTopRight = filledPanels[6] > 0 ? true : false;
         filledTopRight = filledPanels[7] > 0 ? true : false;
+        int[,] myMap = GenerateMap();
+        Debug.Log(myMap.GetLength(0) + " " + myMap.GetLength(1));
         return GenerateMap();
     }
 

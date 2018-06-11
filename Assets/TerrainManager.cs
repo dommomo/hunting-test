@@ -8,11 +8,11 @@ public class TerrainManager : MonoBehaviour {
     public enum Terrain { Dirt, Rock, Tree, Plant}
     public TerrainType[] terrainTypes;
     public string seed;
-    public int[,] terrain;
+    public int[,] map;
 
     private SpriteRenderer[,] renderers;
-    private int height = 250;
-    private int width = 250;
+    private int mapHeight = 250;
+    private int mapWidth = 250;
 
 	// Use this for initialization
 	void Start () {
@@ -28,18 +28,18 @@ public class TerrainManager : MonoBehaviour {
     private void GenerateTerrain()
     {
         int[] wallsFilled = { 0, 0, 0, 0, 0, 0, 1, 1 };
-        RockGenerator rocks = new RockGenerator();
-        terrain = rocks.GetMap(wallsFilled, seed);
+        RockGenerator rocks = transform.gameObject.AddComponent<RockGenerator>();
+        map = rocks.GetMap(wallsFilled, seed);
     }
 
     private void AttachRenderersAndDraw()
     {
         int sortIndex = 0;
         var offset = new Vector3(0, 0, 0);
-        renderers = new SpriteRenderer[height, width];
-        for (int x = 0; x < height; x++)
+        renderers = new SpriteRenderer[mapHeight, mapWidth];
+        for (int x = 0; x < mapHeight; x++)
         {
-            for (int y = 0; y < width; y++)
+            for (int y = 0; y < mapWidth; y++)
             {
                 var tile = new GameObject();
                 tile.transform.position = new Vector3(x, y, 0) + offset;
@@ -56,32 +56,23 @@ public class TerrainManager : MonoBehaviour {
     private void RedrawMap()
     {
         var offset = new Vector3(0,0,0);
-        for (int x = 0; x < height; x++)
+        for (int x = 0; x < mapHeight; x++)
         {
-            for (int y = 0; y < width; y++)
+            for (int y = 0; y < mapWidth; y++)
             {
                 var spriteRenderer = renderers[x, y];
-                //var terrain = SelectTerrain(
-                //    offset.x + x,
-                //    offset.y + y);
-                //spriteRenderer.sprite = terrain.GetTile(offset.x + x, offset.y + y, seed);
-                //var animator = spriteRenderer.gameObject.GetComponent<Animator>();
-                //if (terrain.IsAnimated)
-                //{
-                //    if (animator == null)
-                //    {
-                //        animator = spriteRenderer.gameObject.AddComponent<Animator>();
-                //        animator.runtimeAnimatorController = terrain.animationController;
-                //    }
-                //}
-                //else
-                //{
-                //    if (animator != null)
-                //    {
-                //        GameObject.Destroy(animator);
-                //    }
-                //}
+                var terrain = SelectTerrain(
+                    (int)offset.x + x,
+                    (int)offset.y + y);
+                spriteRenderer.sprite = terrain.GetTile(new Vector2(offset.x + x, offset.y + y), seed);
             }
         }
+    }
+
+    private TerrainType SelectTerrain(int x, int y)
+    {
+        //Debug.Log(map.GetLength(0) + " " + map.GetLength(1));
+        //return terrainTypes[map[x,y]];
+        return terrainTypes[0];
     }
 }

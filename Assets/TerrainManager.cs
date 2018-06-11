@@ -28,7 +28,7 @@ public class TerrainManager : MonoBehaviour {
     private void GenerateTerrain()
     {
         int[] wallsFilled = { 0, 0, 0, 0, 0, 0, 1, 1 };
-        RockGenerator rocks = transform.gameObject.AddComponent<RockGenerator>();
+        RockGenerator rocks = transform.gameObject.GetComponentInChildren<RockGenerator>();
         map = rocks.GetMap(wallsFilled, seed);
     }
 
@@ -71,8 +71,6 @@ public class TerrainManager : MonoBehaviour {
 
     private TerrainType SelectTerrain(int x, int y)
     {
-        //Debug.Log(map.GetLength(0) + " " + map.GetLength(1));
-        //return terrainTypes[map[x,y]];
-        return terrainTypes[0];
+        return terrainTypes[map[x,y]];
     }
 }

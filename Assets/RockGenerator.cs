@@ -26,11 +26,12 @@ public class RockGenerator : MonoBehaviour {
     public int postStretchSmoothingIterations = 1;
     public const int smoothPivot = 4;
 
-    int[,] map;
+    private int[,] map;
 
     public int[,] GetMap()
     {
-        return GenerateMap();
+        GenerateMap();
+        return map;
     }
 
     public int[,] GetMap(int[] filledPanels, string seed)
@@ -45,12 +46,11 @@ public class RockGenerator : MonoBehaviour {
         filledTopRight = filledPanels[5] > 0 ? true : false;
         filledTopRight = filledPanels[6] > 0 ? true : false;
         filledTopRight = filledPanels[7] > 0 ? true : false;
-        int[,] myMap = GenerateMap();
-        Debug.Log(myMap.GetLength(0) + " " + myMap.GetLength(1));
-        return GenerateMap();
+        GenerateMap();
+        return map;
     }
 
-    private int[,] GenerateMap()
+    private void GenerateMap()
     {
         map = new int[initialWidth,initialHeight];
         currentWidth = initialWidth;
@@ -71,8 +71,6 @@ public class RockGenerator : MonoBehaviour {
         {
             SmoothMap();
         }
-
-        return map;
     }
 
     private void RandomFillMapPostStretch()

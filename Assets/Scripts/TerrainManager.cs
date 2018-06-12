@@ -44,7 +44,8 @@ public class TerrainManager : MonoBehaviour {
                 var tile = new GameObject();
                 tile.transform.position = new Vector3(x, y, 0) + offset;
                 var renderer = renderers[x, y] = tile.AddComponent<SpriteRenderer>();
-                renderer.sortingOrder = sortIndex--;
+                renderer.sortingLayerName = "Terrain";
+                renderer.sortingOrder = sortIndex--;             
                 tile.name = "Terrain " + tile.transform.position;
                 tile.transform.parent = transform;
             }
@@ -61,10 +62,8 @@ public class TerrainManager : MonoBehaviour {
             for (int y = 0; y < mapWidth; y++)
             {
                 var spriteRenderer = renderers[x, y];
-                var terrain = SelectTerrain(
-                    (int)offset.x + x,
-                    (int)offset.y + y);
-                spriteRenderer.sprite = terrain.GetTile(new Vector2(offset.x + x, offset.y + y), seed);
+                var terrain = SelectTerrain(x,y);
+                spriteRenderer.sprite = terrain.GetTile(new Vector2(x, y), seed);
             }
         }
     }

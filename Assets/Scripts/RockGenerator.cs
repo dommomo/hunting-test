@@ -40,12 +40,12 @@ public class RockGenerator : MonoBehaviour {
         allWallsFilled = false;
         filledTopLeft = filledPanels[0] > 0 ? true : false ;
         filledTopRight = filledPanels[1] > 0 ? true : false;
-        filledTopRight = filledPanels[2] > 0 ? true : false;
-        filledTopRight = filledPanels[3] > 0 ? true : false;
-        filledTopRight = filledPanels[4] > 0 ? true : false;
-        filledTopRight = filledPanels[5] > 0 ? true : false;
-        filledTopRight = filledPanels[6] > 0 ? true : false;
-        filledTopRight = filledPanels[7] > 0 ? true : false;
+        filledRightTop = filledPanels[2] > 0 ? true : false;
+        filledRightBottom = filledPanels[3] > 0 ? true : false;
+        filledBottomRight = filledPanels[4] > 0 ? true : false;
+        filledBottomLeft = filledPanels[5] > 0 ? true : false;
+        filledLeftBottom = filledPanels[6] > 0 ? true : false;
+        filledLeftTop = filledPanels[7] > 0 ? true : false;
         GenerateMap();
         return map;
     }

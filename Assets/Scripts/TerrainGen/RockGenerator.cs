@@ -8,9 +8,9 @@ namespace AtDawn.TerrainGen
     public class RockGenerator : MonoBehaviour
     {
         [Range(0, 100)]
-        public int randomFillPercentInitial;
+        public int fillPercentInitial;
         [Range(0, 100)]
-        public int randomFillPercentPostStretch;
+        public int fillPercentPostStretch;
 
         public int initialWidth;
         public int initialHeight;
@@ -83,7 +83,7 @@ namespace AtDawn.TerrainGen
                 {
                     if ((map[x, y]) == (int)TypeOfTerrain.Dirt)
                     {
-                        map[x, y] = (int)((RandomHelper.PercentAsInt(x, y, seed.GetHashCode()) < randomFillPercentPostStretch) ? TypeOfTerrain.Rock : TypeOfTerrain.Dirt);
+                        map[x, y] = (int)((RandomHelper.PercentAsInt(x, y, seed.GetHashCode()) < fillPercentPostStretch) ? TypeOfTerrain.Rock : TypeOfTerrain.Dirt);
                     }
                 }
             }
@@ -121,7 +121,7 @@ namespace AtDawn.TerrainGen
             {
                 for (int y = 0; y < initialHeight; y++)
                 {
-                    map[x, y] = (int)((RandomHelper.PercentAsInt(x, y, seed.GetHashCode()) < randomFillPercentInitial) ? TypeOfTerrain.Rock : TypeOfTerrain.Dirt);
+                    map[x, y] = (int)((RandomHelper.PercentAsInt(x, y, seed.GetHashCode()) < fillPercentInitial) ? TypeOfTerrain.Rock : TypeOfTerrain.Dirt);
                     if (allWallsFilled)
                     {
                         if (x == 0 || x == initialWidth - 1 || y == 0 || y == initialHeight - 1)

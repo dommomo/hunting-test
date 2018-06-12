@@ -70,7 +70,6 @@ namespace AtDawn.TerrainGen
 
         private void RedrawMap()
         {
-            var offset = new Vector3(0, 0, 0);
             for (int x = 0; x < mapHeight; x++)
             {
                 for (int y = 0; y < mapWidth; y++)

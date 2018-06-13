@@ -36,7 +36,8 @@ namespace AtDawn.TerrainGen
 
         private void GenerateVegetationLayer()
         {
-
+            FloraGenerator flora = transform.gameObject.GetComponentInChildren<FloraGenerator>();
+            map = flora.AddFloraToMap(map, seed);
         }
 
         private void GenerateTerrain()

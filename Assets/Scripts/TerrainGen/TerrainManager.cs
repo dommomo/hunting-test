@@ -42,9 +42,10 @@ namespace AtDawn.TerrainGen
 
         private void GenerateTerrain()
         {
-            int[] wallsFilled = { 0, 0, 0, 0, 0, 0, 1, 1 };
             RockGenerator rocks = transform.gameObject.GetComponentInChildren<RockGenerator>();
-            map = rocks.GetMap(wallsFilled, seed);
+            //int[] wallsFilled = { 0, 0, 0, 0, 0, 0, 1, 1 };
+            //map = rocks.GetMap(wallsFilled, seed);
+            map = rocks.GetMap(seed);
         }
 
         private void AttachRenderersAndDraw()

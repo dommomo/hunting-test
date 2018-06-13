@@ -29,8 +29,9 @@ namespace AtDawn.TerrainGen
 
         private int[,] map;
 
-        public int[,] GetMap()
+        public int[,] GetMap(string seed)
         {
+            this.seed = seed;
             GenerateMap();
             return map;
         }
